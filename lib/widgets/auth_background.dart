@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 
 class AuthBackground extends StatelessWidget {
   
+  final Widget child;
+
+  const AuthBackground({
+    Key? key, 
+    required this.child
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -12,8 +19,26 @@ class AuthBackground extends StatelessWidget {
         children: [
 
           _PurpleBox(),
-
+          // TODO: container para el widget
+          _HeaderIcon(),
+          // TODO: container del Login
+          this.child,
         ],
+      ),
+    );
+  }
+}
+
+// ** widget del ícono
+class _HeaderIcon extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea( // ** Es para no tomar en cuenta la parte superior del teléfono 
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.only( top: 30 ),
+        child: Icon(Icons.person_pin, color: Colors.white, size: 100,),
       ),
     );
   }
