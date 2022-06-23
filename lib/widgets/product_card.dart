@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:productos_app/models/models.dart';
 
@@ -22,7 +23,7 @@ class ProductCard extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomLeft,
           children: [
-            _BackgroundImage(product.picture),
+            _BackgroundImage(),
 
             _ProductDetails(
               title: product.name,
@@ -160,28 +161,38 @@ class _ProductDetails extends StatelessWidget {
 
 class _BackgroundImage extends StatelessWidget {
 
-  final String? url;
+  const _BackgroundImage({
+    Key? key,
+    this.url,
+  }):super(key: key);
 
-  const _BackgroundImage(this.url);
+  final String? url;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(25),
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         height: 400,
-        child: url==null
-          ? Image(
-            image: AssetImage('assets/no-image.png'),
-            fit: BoxFit.cover
-            )
-          : FadeInImage(
-          placeholder: AssetImage('assets/jar-loading.gif'),
-          image: NetworkImage(url!),
-          fit: BoxFit.cover,
-        ),
+        child: getImage(url),
       ),
     );
+  }
+
+ 
+  Widget getImage(String? picture) {
+    if (picture == null) {
+      return const Image(
+          image: AssetImage('assets/no-image.png'), fit: BoxFit.cover);
+    }
+    if (picture.startsWith('http')) {
+      return FadeInImage(
+        placeholder: const AssetImage('assets/jar-loading.gif'),
+        image: NetworkImage(url!),
+        fit: BoxFit.cover,
+      );
+    }
+    return Image.file(File(picture), fit: BoxFit.cover);
   }
 }

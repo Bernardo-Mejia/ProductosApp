@@ -77,7 +77,7 @@ class _ProductScreenBody extends StatelessWidget {
                         return ;
                       }
 
-                      print('Imagen seleccionada: ${pickedFile.path}');
+                      // print('Imagen seleccionada: ${pickedFile.path}');
                       productService.updateSelectedProductImage(pickedFile.path);
 
                     }, 
@@ -98,10 +98,20 @@ class _ProductScreenBody extends StatelessWidget {
 
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.save_as_outlined),
-        onPressed: () async{
+        child: productService.isSaving  
+          ? CircularProgressIndicator( color: Colors.white,)
+          : Icon(Icons.save_as_outlined),
+        onPressed: productService.isSaving 
+          ? null
+          : () async{
           // TODO: Guardar producto
           if(!productForm.isValidForm()) return;
+
+          final String? imageUrl = await productService.uploadImage();
+
+          // print(imageUrl);
+          if(imageUrl != null) productForm.product.picture = imageUrl;
+
           await productService.saveOrCreateProduct(productForm.product);
         },
       ),
